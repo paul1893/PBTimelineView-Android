@@ -24,3 +24,23 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 }
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'PBTimelineView'
+
+    // Maven metadata
+    publishedGroupId = 'com.thefrenchtouch.lib'
+    libraryName = 'PBTimelineView'
+    artifact = 'pbtimelineview'
+
+    libraryDescription = 'A tree view to show your events or anything else'
+    libraryVersion = '1.0.0'
+
+    developerId = 'bancarelpaul'
+    developerName = 'Paul Bancarel'
+    developerEmail = 'pspol@hotmail.fr'
+}
+
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
