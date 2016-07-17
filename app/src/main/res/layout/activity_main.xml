@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/MainActivity_scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:isScrollContainer="false"
+    tools:context="com.thefrenchtouch.timelineview.MainActivity">
+
+    <com.thefrenchtouch.pbtimelineview.widget.PBTimelineView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pbtimelineview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        app:backgroudColorItems="@color/colorPrimaryDark"
+        app:isCalendarEnabled="false"
+        app:leftOffset="100dp"
+        app:lineColor="@color/colorPrimaryDark"
+        app:mainText="Title"
+        app:mainTextColor="@color/colorPrimaryDark"
+        app:mainTextSize="28sp"
+        app:numberOfPoints="7"
+        app:pointColor="@color/colorAccent"
+        app:radiusPoint="5dp"
+        app:strokeLine="3dp"
+        app:textColor="@color/colorPrimaryDark"
+        app:textColorItem="@color/colorAccent"
+        app:textSize="15sp"
+        app:textSizeItem="15sp"
+        app:texts="@array/array_example"
+        app:widthItem="100dp" />
+
+</ScrollView>

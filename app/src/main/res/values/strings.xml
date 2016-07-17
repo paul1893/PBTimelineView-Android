@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TimelineView</string>
+
+    <string-array name="array_example">
+        <item>Text 1</item>
+        <item>Text 2</item>
+        <item>Text 3</item>
+        <item>Text 4</item>
+        <item>Text 5</item>
+        <item>Text 6</item>
+        <item>Text 7</item>
+    </string-array>
+</resources>
