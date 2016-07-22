@@ -9,6 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -206,6 +208,7 @@ public class PBTimelineView extends RelativeLayout {
                 /* Place horizontal items view in recycler view -> scrollable */
                 RecyclerView mRecyclerView = new RecyclerView(getContext());
                 mRecyclerView.setHasFixedSize(true);
+                mRecyclerView.setId(("rv"+i).hashCode());
 
                 // Set adapter of the recycler view
                 ArrayList<PBItem> items = new ArrayList<PBItem>();
@@ -353,5 +356,182 @@ public class PBTimelineView extends RelativeLayout {
 
     public interface onItemClickListener {
         void onItemClick(int section, int num, String text, PBItem item);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        //begin boilerplate code that allows parent classes to save state
+        Parcelable superState = super.onSaveInstanceState();
+
+        SavedState ss = new SavedState(superState);
+        //end
+
+        ss.widthItem = this.widthItem;
+        ss.heightItem = this.heightItem;
+        ss.mainTextSize = this.mainTextSize;
+        ss.textSize = this.textSize;
+        ss.textSizeItem = this.textSizeItem;
+        ss.radiusRoundRectX = this.radiusRoundRectX;
+        ss.radiusRoundRectY = this.radiusRoundRectY;
+        ss.numberOfPoints = this.numberOfPoints;
+        ss.radiusPoint = this.radiusPoint;
+        ss.strokeLine = this.strokeLine;
+        ss.leftOffset = this.leftOffset;
+        ss.isCalendarEnabled = this.isCalendarEnabled;
+        ss.texts = this.texts;
+        ss.title = this.title;
+        ss.backgroudColorItems = this.backgroudColorItems;
+        ss.lineColor = this.lineColor;
+        ss.pointColor = this.pointColor;
+        ss.mainTextColor = this.mainTextColor;
+        ss.textColor = this.textColor;
+        ss.textColorItem = this.textColorItem;
+
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        //begin boilerplate code so parent classes can restore state
+        if (!(state instanceof SavedState)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+        //end
+
+        this.widthItem = ss.widthItem;
+        this.heightItem = ss.heightItem;
+        this.mainTextSize = ss.mainTextSize;
+        this.textSize = ss.textSize;
+        this.textSizeItem = ss.textSizeItem;
+        this.radiusRoundRectX = ss.radiusRoundRectX;
+        this.radiusRoundRectY = ss.radiusRoundRectY;
+        this.numberOfPoints = ss.numberOfPoints;
+        this.radiusPoint = ss.radiusPoint;
+        this.strokeLine = ss.strokeLine;
+        this.leftOffset = ss.leftOffset;
+        this.isCalendarEnabled = ss.isCalendarEnabled;
+        this.texts = ss.texts;
+        this.title = ss.title;
+        this.backgroudColorItems = ss.backgroudColorItems;
+        this.lineColor = ss.lineColor;
+        this.pointColor = ss.pointColor;
+        this.mainTextColor = ss.mainTextColor;
+        this.textColor = ss.textColor;
+        this.textColorItem = ss.textColorItem;
+    }
+
+    static class SavedState extends BaseSavedState {
+        int widthItem;
+        int heightItem;
+        int mainTextSize;
+        int textSize;
+        int textSizeItem;
+
+        int radiusRoundRectX;
+        int radiusRoundRectY;
+
+        int numberOfPoints;
+        int radiusPoint;
+        int strokeLine;
+        int leftOffset;
+
+        boolean isCalendarEnabled = false;
+        String[] texts;
+        String title;
+
+        int backgroudColorItems;
+        int lineColor;
+        int pointColor;
+        int mainTextColor;
+        int textColor;
+        int textColorItem;
+
+        String[][] textItems;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.widthItem = in.readInt();
+            this.heightItem = in.readInt();
+            this.mainTextSize = in.readInt();
+            this.textSize = in.readInt();
+            this.textSizeItem = in.readInt();
+            this.radiusRoundRectX = in.readInt();
+            this.radiusRoundRectY = in.readInt();
+            this.numberOfPoints = in.readInt();
+            this.radiusPoint = in.readInt();
+            this.strokeLine = in.readInt();
+            this.leftOffset = in.readInt();
+            this.isCalendarEnabled = in.readByte() != 0;
+            this.texts = in.createStringArray();
+            this.title = in.readString();
+            this.backgroudColorItems = in.readInt();
+            this.lineColor = in.readInt();
+            this.pointColor = in.readInt();
+            this.mainTextColor = in.readInt();
+            this.textColor = in.readInt();
+            this.textColorItem = in.readInt();
+
+            int N = in.readInt();
+            if (N > 0) {
+                String[][] array = new String[N][];
+                for (int i = 0; i < N; i++) {
+                    array[i] = in.createStringArray();
+                }
+                this.textItems = array;
+            }
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(this.widthItem);
+            out.writeInt(this.heightItem);
+            out.writeInt(this.mainTextSize);
+            out.writeInt(this.textSize);
+            out.writeFloat(this.textSizeItem);
+            out.writeFloat(this.radiusRoundRectX);
+            out.writeInt(this.radiusRoundRectY);
+            out.writeInt(this.numberOfPoints);
+            out.writeInt(this.radiusPoint);
+            out.writeInt(this.strokeLine);
+            out.writeInt(this.leftOffset);
+            out.writeByte((byte) (this.isCalendarEnabled ? 1 : 0));
+            out.writeStringArray(this.texts);
+            out.writeString(this.title);
+            out.writeInt(this.backgroudColorItems);
+            out.writeInt(this.lineColor);
+            out.writeInt(this.pointColor);
+            out.writeInt(this.mainTextColor);
+            out.writeInt(this.textColor);
+            out.writeInt(this.textColorItem);
+
+            if (textItems != null) {
+                out.writeInt(textItems.length); /*Register array two dimension*/
+                for (int i = 0; i < textItems.length; i++) {
+                    out.writeStringArray(textItems[i]);
+                }
+            }
+
+        }
+
+        //required field that makes Parcelables from a Parcel
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 }
