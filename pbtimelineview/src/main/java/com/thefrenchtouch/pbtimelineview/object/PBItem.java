@@ -5,15 +5,26 @@ package com.thefrenchtouch.pbtimelineview.object;
  */
 public class PBItem {
 
-    private int section;
-    private int id;
-    private int width;
-    private int height;
-    private String text;
-    private int backgroundColor;
-    private int textSize;
-    private int textColor;
+    private int section;            // The position in the section of the timelineview
+    private int id;                 // His id
+    private int width;              // His width
+    private int height;             // His height
+    private String text;            // His text
+    private int backgroundColor;    // His background color
+    private int textSize;           // His text size
+    private int textColor;          // His text color
 
+    /**
+     * Constructor
+     * @param  width
+     * @param height
+     * @param section
+     * @param id
+     * @param text
+     * @param backgroundColor
+     * @param textSize
+     * @param textColor
+     * */
     public PBItem(int width, int height, int section, int id, String text, int backgroundColor, int textSize, int textColor) {
         this.width = width;
         this.height = height;
@@ -27,7 +38,11 @@ public class PBItem {
         setupItemConfiguration();
     }
 
+    /**
+     * Configure the item
+     * */
     private void setupItemConfiguration() {
+        // For now, do nothing ...
     }
 
     public int getItemWidth() {

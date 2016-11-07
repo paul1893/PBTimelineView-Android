@@ -97,6 +97,9 @@ public class PBTimelineView extends RelativeLayout {
         setupConfiguration(null);
     }
 
+    /**
+     * Initialize the view with some configurations
+     */
     private void setupConfiguration(AttributeSet attrs) {
         final Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point deviceDisplay = new Point();
@@ -110,7 +113,7 @@ public class PBTimelineView extends RelativeLayout {
                 0, 0
         );
 
-        //On récupère les attributs définis par l'utilisateur
+        // Get attributes
         try {
             widthItem = a.getLayoutDimension(R.styleable.PBTimelineView_widthItem, 100);
             heightItem = a.getLayoutDimension(R.styleable.PBTimelineView_heightItem, widthItem / 2);
@@ -142,25 +145,24 @@ public class PBTimelineView extends RelativeLayout {
             a.recycle();
         }
 
+        // Size for items and compute steps
         radiusRoundRectX = 5;
         radiusRoundRectY = radiusRoundRectX;
-
         step = (2 * heightItem) + (2 * padding);
 
+        // If the user has choosen calendar timeline view then update the text with calendar information automatically
         if (isCalendarEnabled) {
             updateCalendar();
         }
-
-
     }
 
     private void updateCalendar() {
-        numberOfPoints = 7;
+        numberOfPoints = 7; // Represent the next days, here the 7 nest days
         texts = new String[numberOfPoints];
         Calendar calendar = Calendar.getInstance();
-        String[] days = new String[]{"Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"};
+        String[] days = new String[]{"Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"}; // TODO: Handle multilanguage support
 
-        //Example for title: Ven. 4 Avril
+        // Example for title: Ven. 4 Avril
         String dayName = new SimpleDateFormat("EE").format(calendar.getTime());
         int dayNum = calendar.get(Calendar.DAY_OF_MONTH);
         String monthName = new SimpleDateFormat("MMM").format(calendar.getTime());
@@ -173,25 +175,28 @@ public class PBTimelineView extends RelativeLayout {
             ;
             this.texts[i - 1] = day + ".";
         }
-
     }
 
+    /**
+     * Draw the items of the timeline view
+     */
     public void drawBoxes() {
+        // If NONE then return
         if (textItems == null) {
             return;
         }
 
         listRecyclerView = new ArrayList<RecyclerView>();
-        // On dessine les rectangles en ligne et on écrit dedans /* Be careful addView recall onDraw method infinite loop*/
-
-        int viewWidth = getMeasuredWidth();
-        int viewHeight = getMeasuredHeight();
 
         for (int i = 1; i < numberOfPoints; i++) {
 
             try {
+                /* DEPRECATED - Method 1 : (Not Scrollable Without RecyclerViews)
+                // Place horizontal items view -> not scrollable
+                // Be careful addView recall onDraw method infinite loop
+                    int viewWidth = getMeasuredWidth();
+                    int viewHeight = getMeasuredHeight();
 
-                /* // Place horizontal items view -> not scrollable
                     for(int j = 0; j < textItems[i-1].length; j++) {
                     Item item = new Item(getContext(), i, j, textItems[i - 1][j]);
                     item.setLeft(leftOffset + padding + (j * widthItem) + (j*padding));
@@ -205,18 +210,22 @@ public class PBTimelineView extends RelativeLayout {
                     this.addView(item);
                 }*/
 
-                /* Place horizontal items view in recycler view -> scrollable */
+                /* Method 2 : (Scrollable) */
                 RecyclerView mRecyclerView = new RecyclerView(getContext());
                 mRecyclerView.setHasFixedSize(true);
-                mRecyclerView.setId(("rv"+i).hashCode());
+                mRecyclerView.setId(("rv" + i).hashCode());
 
-                // Set adapter of the recycler view
+                // Get all the items from texts
                 ArrayList<PBItem> items = new ArrayList<PBItem>();
                 for (int j = 0; j < textItems[i - 1].length; j++) {
                     String text = textItems[i - 1][j];
+                    // For each text create an item
                     PBItem item = new PBItem(widthItem, heightItem, i, j, text, backgroudColorItems, textSizeItem, textColorItem);
+                    // and add it
                     items.add(item);
                 }
+
+                // Create the adapter to handle the items
                 PBTimelineAdapter mAdapter = new PBTimelineAdapter(getContext(), items, listener);
 
                 // Set layout manager of the recycler view
@@ -224,9 +233,10 @@ public class PBTimelineView extends RelativeLayout {
                         = new LinearLayoutManager(getContext());
                 mLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
-                mRecyclerView.setLayoutManager(mLinearLayoutManager);
-                mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.setLayoutManager(mLinearLayoutManager); // Set the layout manager
+                mRecyclerView.setAdapter(mAdapter); // Set adapter of the recycler view
 
+                // Do not forget to add the recylcler views
                 this.addView(mRecyclerView);
                 this.listRecyclerView.add(mRecyclerView);
 
@@ -234,9 +244,11 @@ public class PBTimelineView extends RelativeLayout {
                 Log.i("DrawBoxes", "PBTimelineView section " + i + " has no texts");
             }
         }
-
     }
 
+    /**
+     * Change the texts of the items in the timeline view
+     * */
     public void setTextItems(String[][] textItems) {
         this.textItems = textItems;
 
@@ -247,45 +259,53 @@ public class PBTimelineView extends RelativeLayout {
         }
     }
 
+    /**
+     * Draw the timelineview
+     * @param canvas The canvas where the timelineview is drawned
+     * */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // Prepare paint to write title
         Paint mLinePaint = new Paint();
         mLinePaint.setColor(mainTextColor);
         mLinePaint.setStyle(Paint.Style.FILL);
         mLinePaint.setTextSize(mainTextSize);
         mLinePaint.setStrokeWidth(strokeLine);
 
-        // On écrit le titre
+        // Write title
         Rect textBounds = new Rect();
         mLinePaint.getTextBounds(title, 1, title.length(), textBounds);
         canvas.drawText(title, leftOffset + padding, textBounds.height() + padding, mLinePaint);
 
-        //On dessine la ligne verticale
+        // Draw vertical line
         mLinePaint.setColor(lineColor);
         canvas.drawLine(leftOffset, 0, leftOffset, height, mLinePaint);
 
-        //On dessine les points
-
+        // Draw dots to the intersection
         for (int i = 1; i < numberOfPoints; i++) {
-
-            // On dessine la date ou le texte
+            // Draw date or user's custom text at the intersection
             if (texts != null) {
+                // Prepare paint
                 mLinePaint.setColor(textColor);
                 mLinePaint.setTextSize(textSize);
                 float textWidth = mLinePaint.measureText(texts[i - 1]);
                 String currentText = texts[i - 1];
                 mLinePaint.getTextBounds(currentText, 1, currentText.length(), textBounds);
+                // Draw date|text
                 canvas.drawText(currentText, leftOffset - textWidth - padding, (i * step) + (textBounds.height() / 2), mLinePaint);
             }
 
-            // On dessine le petit cercle
+            // Draw dot
             mLinePaint.setColor(pointColor);
             canvas.drawCircle(leftOffset, i * step, radiusPoint, mLinePaint);
         }
     }
 
+    /**
+     * Notify the adapter that something changed on the timeline view
+     * */
     public void notifyDataSetChanged() {
         for (RecyclerView rv : listRecyclerView) {
             rv.getAdapter().notifyDataSetChanged();
@@ -297,7 +317,7 @@ public class PBTimelineView extends RelativeLayout {
         final int count = getChildCount();
         int curWidth, curHeight, curLeft, curTop, maxHeight;
 
-        //get the available size of child view
+        // Get the available size of child view
         final int childLeft = this.getPaddingLeft();
         final int childTop = this.getPaddingTop();
         final int childRight = this.getMeasuredWidth() - this.getPaddingRight();
@@ -315,17 +335,17 @@ public class PBTimelineView extends RelativeLayout {
             if (child.getVisibility() == GONE)
                 continue;
 
-            //Get the maximum size of the child
+            // Get the maximum size of the child
             child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.AT_MOST));
             curWidth = child.getMeasuredWidth();
             curHeight = child.getMeasuredHeight();
-            //wrap is reach to the end
+            // Wrap is reach to the end
             if (curLeft + curWidth >= childRight) {
                 curLeft = childLeft;
                 curTop += maxHeight;
                 maxHeight = 0;
             }
-            //do the layout
+            // Do the layout
             int recyclerViewWidth = getMeasuredWidth() - leftOffset - padding;
             int recyclerViewHeight = heightItem;
             int left = leftOffset + padding;
@@ -334,7 +354,7 @@ public class PBTimelineView extends RelativeLayout {
             int bottom = ((i + 1) * step) + (heightItem / 2);
 
             child.layout(left, top, right, bottom);
-            //store the max height
+            // Store the max height
             if (maxHeight < curHeight)
                 maxHeight = curHeight;
             curLeft += curWidth;
@@ -343,7 +363,7 @@ public class PBTimelineView extends RelativeLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // On recadre la vue pour s'adapter au contenu
+        // Re-measure
         width = MeasureSpec.getSize(widthMeasureSpec);
         height = numberOfPoints * step;
 
@@ -354,10 +374,18 @@ public class PBTimelineView extends RelativeLayout {
         this.listener = listener;
     }
 
+    /**
+     * Called when an item of the timeline is clicked
+     */
     public interface onItemClickListener {
         void onItemClick(int section, int num, String text, PBItem item);
     }
 
+    /**
+     * Save state on configuration change
+     *
+     * @return parcelable
+     */
     @Override
     public Parcelable onSaveInstanceState() {
         //begin boilerplate code that allows parent classes to save state
@@ -390,9 +418,14 @@ public class PBTimelineView extends RelativeLayout {
         return ss;
     }
 
+    /**
+     * Restore state on configuration change
+     *
+     * @param state
+     */
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        //begin boilerplate code so parent classes can restore state
+
         if (!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
             return;
@@ -400,7 +433,7 @@ public class PBTimelineView extends RelativeLayout {
 
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
-        //end
+
 
         this.widthItem = ss.widthItem;
         this.heightItem = ss.heightItem;
@@ -522,7 +555,7 @@ public class PBTimelineView extends RelativeLayout {
 
         }
 
-        //required field that makes Parcelables from a Parcel
+        // Required field that makes Parcelables from a Parcel
         public static final Parcelable.Creator<SavedState> CREATOR =
                 new Parcelable.Creator<SavedState>() {
                     public SavedState createFromParcel(Parcel in) {

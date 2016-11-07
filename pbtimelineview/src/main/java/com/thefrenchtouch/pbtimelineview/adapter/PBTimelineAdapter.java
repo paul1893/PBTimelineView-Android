@@ -19,10 +19,10 @@ import java.util.ArrayList;
  */
 public class PBTimelineAdapter extends RecyclerView.Adapter<PBTimelineAdapter.ViewHolder> {
 
+    private PBTimelineView.onItemClickListener listener;// For callbacks
     private Context mContext;
-    private ArrayList<PBItem> items; //The data of the adapter
-    private PBTimelineView.onItemClickListener listener;
-    private static final int TYPE_ITEM = 1; //Type of the item
+    private ArrayList<PBItem> items;                    //The data of the adapter
+    private static final int TYPE_ITEM = 1;             //Type of the item
 
     /**
      * Constructor
@@ -30,7 +30,6 @@ public class PBTimelineAdapter extends RecyclerView.Adapter<PBTimelineAdapter.Vi
      * @param context
      * @param items
      */
-    // Provide a suitable constructor (depends on the kind of dataset)
     public PBTimelineAdapter(Context context, ArrayList<PBItem> items, PBTimelineView.onItemClickListener listener) {
         this.mContext = context;
         this.items = items;
@@ -43,13 +42,12 @@ public class PBTimelineAdapter extends RecyclerView.Adapter<PBTimelineAdapter.Vi
      * @param parent
      * @param viewType
      */
-    // Create new views (invoked by the layout manager)
     @Override
     public PBTimelineAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                            int viewType) {
         ViewHolder vh = null;
 
-        //We check if it's an item type
+        // We check if it's an item type
         if (viewType == TYPE_ITEM) {
             //From XML
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pbtimelineadapter_pbitemview, parent, false);
@@ -57,12 +55,12 @@ public class PBTimelineAdapter extends RecyclerView.Adapter<PBTimelineAdapter.Vi
             view.getLayoutParams().width = items.get(0).getItemWidth();
 
             // Or Programmatically
-//            PBItem item = getItem(0);
-//            PBItemView view = new PBItemView(mContext, item);
-//            RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(item.getItemWidth(), item.getItemHeight());
-//            int margin = mContext.getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-//            params.setMargins(margin, 0, margin, 0);
-//            view.setLayoutParams(params);
+          /*PBItem item = getItem(0);
+            PBItemView view = new PBItemView(mContext, item);
+            RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(item.getItemWidth(), item.getItemHeight());
+            int margin = mContext.getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+            params.setMargins(margin, 0, margin, 0);
+            view.setLayoutParams(params);*/
 
             vh = new VHItem(view);
         }
@@ -73,7 +71,6 @@ public class PBTimelineAdapter extends RecyclerView.Adapter<PBTimelineAdapter.Vi
     /**
      * We put the data in the items
      */
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
@@ -124,17 +121,6 @@ public class PBTimelineAdapter extends RecyclerView.Adapter<PBTimelineAdapter.Vi
     }
 
 
-//    /**
-//     * Set new data to the adapter (and automatically notify data has been changed)
-//     *
-//     * @param newDataSet
-//     * */
-//    public void setDataSet(String[] newDataSet){
-//        //this.strings = newDataSet;
-//        //notifyDataSetChanged();
-//    }
-
-
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -166,5 +152,4 @@ public class PBTimelineAdapter extends RecyclerView.Adapter<PBTimelineAdapter.Vi
             listener.onItemClick(item.getSection(), item.getId(), item.getText(), item);
         }
     }
-
 }

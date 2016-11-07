@@ -15,8 +15,11 @@ public class MainActivity extends AppCompatActivity implements PBTimelineView.on
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Initialize the TimelineView
         PBTimelineView mTimelineView = (PBTimelineView) findViewById(R.id.pbtimelineview);
+        // Set the listener
         mTimelineView.setOnItemClickListener(this);
+        // Add some data to the timeline view
         mTimelineView.setTextItems(new String[][]{
                 {"Boxe", "Dance", "Boxe", "Dance", "Boxe", "Dance"},
                 {"MMA", "Step", "Muscu"},
@@ -28,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements PBTimelineView.on
         });
     }
 
+    /**
+     * Called when an item of the timeline view is clicked
+     * */
     @Override
     public void onItemClick(int section, int num, String text, PBItem item) {
         Toast.makeText(this, "Section: " + section + " Item: " + num, Toast.LENGTH_SHORT).show();
